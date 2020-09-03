@@ -15,6 +15,10 @@ body {
   margin-bottom: 20px;
 }
 
+.app_left {
+  flex: .9;
+}
+
 .app_stats {
   display: flex;
   justify-content: space-between;
