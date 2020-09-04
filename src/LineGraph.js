@@ -47,27 +47,29 @@ const options ={
   ]
 };
 
-function LineGraph({ casesType = 'cases'}) {
+const buildChartData = (data, casesType='cases') => {
+  const chartData = [];
+  let lastDataPoint;
+
+  for(let date in data.cases) {
+    if(lastDataPoint) {
+      const newDataPoint = {
+        x: date,
+        y: data[casesType][date] - lastDataPoint
+      };
+      chartData.push(newDataPoint);
+    }
+    lastDataPoint = data[casesType][date];
+  }
+  return chartData;
+};
+
+function LineGraph({ casesType = 'cases', ...props}) {
   const [data, setData] = useState({});
 
   // https://disease.sh/v3/covid-19/historical/all?lastdays=120
 
-  const buildChartData = (data, casesType='cases') => {
-    const chartData = [];
-    let lastDataPoint;
-
-    for(let date in data.cases) {
-      if(lastDataPoint) {
-        const newDataPoint = {
-          x: date,
-          y: data[casesType][date] - lastDataPoint
-        };
-        chartData.push(newDataPoint);
-      }
-      lastDataPoint = data[casesType][date];
-    }
-    return chartData;
-  };
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -82,7 +84,7 @@ function LineGraph({ casesType = 'cases'}) {
   }, [casesType]);
 
   return (
-    <div>
+    <div className={props.className}>
     {/* optional chaining */}
     {data?.length > 0 && (
       <Line 
@@ -93,7 +95,7 @@ function LineGraph({ casesType = 'cases'}) {
             borderColor: '#CC1034',
             data: data
         }]
-      }}   />
+      }}  />
     )}
     </div>
   )

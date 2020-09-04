@@ -5,14 +5,19 @@ import { Circle, Popup } from 'react-leaflet';
 const casesTypeColors = {
   cases: {
     hex: '#CC1034',
+    rgb: 'rgba(204, 16, 52, .5)',
+    half_op: 'rgba(204, 16, 52, .5)',
     multiplier: 800,
   },
   recovered: {
     hex: '#7dd71d',
+    rgb: 'rgba(125, 215, 29, .5)',
+    half_op: 'rgba(125, 215, 29, .5)',
     multiplier: 1200,
   },
   deaths: {
     hex: '#db4444',
+    rgb: 'rgb(251, 68, 67)',
     multiplier: 2000,
   },
 };
@@ -30,6 +35,9 @@ export const sortData = (data) => {
   return sortedData;
 };
 
+export const prettyPrintStat = (stat) => 
+  stat ? `+${numeral(stat).format('0.0a')}` : "+0";
+
 // Draw circles on the map with ineractive tooltips
 export const showDataOnMap = (data, casesType='cases') => (
 
@@ -42,7 +50,13 @@ export const showDataOnMap = (data, casesType='cases') => (
         radius={Math.sqrt(country[casesType]) * casesTypeColors[casesType].multiplier}
       >
         <Popup>
-          <h1>IM A POPUP</h1>
+          <div className='info-container'>
+            <div className='info-flag' style={{ backgroundImage: `url(${country.countryInfo.flag})`}} />
+            <div className='info-name'>{country.country}</div>
+            <div className='info-confirmed'>Cases: {numeral(country.cases).format('0,0')}</div>
+            <div className='info-recovered'>Recovered: {numeral(country.recovered).format('0,0')}</div>
+            <div className='info-deaths'>Deaths: {numeral(country.deaths).format('0,0')}</div>
+          </div>
         </Popup>
       </Circle>
 
